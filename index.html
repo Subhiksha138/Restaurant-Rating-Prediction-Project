@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RestoPredict | Restaurant Rating Prediction</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f7f8fc;
+            color: #222;
+            line-height: 1.6;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: #111827;
+            padding: 16px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #f59e0b;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        nav ul li a:hover {
+            color: #f59e0b;
+        }
+
+        section {
+            padding: 80px 7%;
+        }
+
+        .hero {
+            min-height: 650px;
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            background: #fff;
+        }
+
+        .hero-text {
+            flex: 1;
+        }
+
+        .hero-text h1 {
+            font-size: 52px;
+            line-height: 1.1;
+            color: #111827;
+            margin-bottom: 20px;
+        }
+
+        .hero-text h1 span {
+            color: #f59e0b;
+        }
+
+        .hero-text p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #f59e0b;
+            color: white;
+            padding: 14px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #d97706;
+        }
+
+        .hero-image {
+            flex: 1;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 430px;
+            object-fit: cover;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.18);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .section-title h2 {
+            font-size: 38px;
+            color: #111827;
+            margin-bottom: 10px;
+        }
+
+        .section-title p {
+            color: #666;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .card .icon {
+            font-size: 35px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            color: #111827;
+        }
+
+        .card p {
+            color: #666;
+        }
+
+        .prediction-section {
+            background: #111827;
+            color: white;
+        }
+
+        .prediction-container {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .prediction-image img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 22px;
+        }
+
+        .form-box {
+            background: white;
+            color: #222;
+            padding: 35px;
+            border-radius: 20px;
+        }
+
+        .form-box h2 {
+            margin-bottom: 10px;
+            color: #111827;
+        }
+
+        .form-box p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #374151;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #f59e0b;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .predict-button {
+            margin-top: 25px;
+            width: 100%;
+            padding: 14px;
+            background: #f59e0b;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .predict-button:hover {
+            background: #d97706;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 25px;
+            background: #fff7ed;
+            border: 2px solid #f59e0b;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .result h3 {
+            color: #111827;
+        }
+
+        .rating-number {
+            font-size: 45px;
+            font-weight: bold;
+            color: #f59e0b;
+        }
+
+        .dashboard {
+            background: #f7f8fc;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+        }
+
+        .stat-card h3 {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card strong {
+            font-size: 30px;
+            color: #111827;
+        }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .dashboard-box {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+        }
+
+        .dashboard-box h3 {
+            margin-bottom: 25px;
+            color: #111827;
+        }
+
+        .rating-row {
+            margin-bottom: 22px;
+        }
+
+        .rating-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            font-size: 14px;
+        }
+
+        .bar {
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .fill {
+            height: 100%;
+            width: 0;
+            border-radius: 20px;
+            background: #f59e0b;
+        }
+
+        .dashboard-image {
+            width: 100%;
+            height: 330px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .about-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 45px;
+            align-items: center;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 430px;
+            object-fit: cover;
+            border-radius: 20px;
+        }
+
+        .about-text h2 {
+            font-size: 38px;
+            margin-bottom: 20px;
+            color: #111827;
+        }
+
+        .about-text p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .workflow-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+        }
+
+        .workflow-card span {
+            font-size: 30px;
+            font-weight: bold;
+            color: #f59e0b;
+        }
+
+        .workflow-card h3 {
+            margin: 10px 0;
+        }
+
+        .workflow-card p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        footer {
+            background: #111827;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .hero,
+            .prediction-container,
+            .about-container,
+            .dashboard-content {
+                grid-template-columns: 1fr;
+                display: grid;
+            }
+
+            .cards,
+            .stats,
+            .workflow {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero-text h1 {
+                font-size: 40px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            nav ul {
+                gap: 12px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .cards,
+            .stats,
+            .workflow,
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding-top: 50px;
+            }
+
+            section {
+                padding: 60px 5%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <div class="logo">
+        Resto<span>Predict</span>
+    </div>
+
+    <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#prediction">Prediction</a></li>
+        <li><a href="#dashboard">Dashboard</a></li>
+        <li><a href="#about">About</a></li>
+    </ul>
+</nav>
+
+
+<!-- HOME -->
+<section class="hero" id="home">
+
+    <div class="hero-text">
+
+        <h1>
+            Restaurant Rating
+            <span>Prediction</span>
+        </h1>
+
+        <p>
+            An AI-based web application that predicts
+            restaurant ratings using restaurant information,
+            location, cuisine, cost, services and votes.
+        </p>
+
+        <a href="#prediction" class="btn">
+            Predict Rating
+        </a>
+
+    </div>
+
+    <div class="hero-image">
+
+        <img
+            src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=85"
+            alt="Modern Restaurant">
+
+    </div>
+
+</section>
+
+
+<!-- FEATURES -->
+<section>
+
+    <div class="section-title">
+
+        <h2>What This System Does</h2>
+
+        <p>
+            Smart restaurant analysis using machine learning
+        </p>
+
+    </div>
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="icon">🤖</div>
+
+            <h3>AI Prediction</h3>
+
+            <p>
+                Predicts the expected restaurant rating
+                using a trained machine learning model.
+            </p>
+        </div>
+
+
+        <div class="card">
+            <div class="icon">📊</div>
+
+            <h3>Analytics Dashboard</h3>
+
+            <p>
+                Displays useful restaurant statistics
+                from the dataset.
+            </p>
+        </div>
+
+
+        <div class="card">
+            <div class="icon">🍽️</div>
+
+            <h3>Restaurant Analysis</h3>
+
+            <p>
+                Uses cuisine, location, cost, services
+                and votes for prediction.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PREDICTION -->
+<section class="prediction-section" id="prediction">
+
+    <div class="section-title">
+
+        <h2 style="color:white;">
+            Predict Restaurant Rating
+        </h2>
+
+        <p style="color:#d1d5db;">
+            Enter restaurant details below
+        </p>
+
+    </div>
+
+
+    <div class="prediction-container">
+
+        <div class="prediction-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=1000&q=85"
+                alt="Restaurant Food">
+
+        </div>
+
+
+        <div class="form-box">
+
+            <h2>Restaurant Information</h2>
+
+            <p>
+                Enter the available restaurant details
+                to get the predicted rating.
+            </p>
+
+
+            <form action="/predict" method="POST">
+
+                <div class="form-grid">
+
+                    {% for column in features %}
+
+                    <div class="form-group">
+
+                        <label>
+                            {{ column.replace('_', ' ').title() }}
+                        </label>
+
+                        <input
+                            type="text"
+                            name="{{ column }}"
+                            placeholder="Enter {{ column.replace('_', ' ') }}"
+                            required
+                        >
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <button type="submit" class="predict-button">
+                    ⭐ Predict Restaurant Rating
+                </button>
+
+            </form>
+
+
+            {% if prediction is defined %}
+
+            <div class="result">
+
+                <h3>Predicted Rating</h3>
+
+                <div class="rating-number">
+                    {{ prediction }}
+                </div>
+
+                <p>
+                    Category:
+                    <strong>{{ category }}</strong>
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- DASHBOARD -->
+<section class="dashboard" id="dashboard">
+
+    <div class="section-title">
+
+        <h2>Restaurant Analytics Dashboard</h2>
+
+        <p>
+            Overview of the restaurant dataset
+        </p>
+
+    </div>
+
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <h3>Total Restaurants</h3>
+
+            <strong>
+                {{ total_restaurants }}
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>Average Rating</h3>
+
+            <strong>
+                {{ average_rating }}
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>Total Votes</h3>
+
+            <strong>
+                {{ total_votes }}
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>Average Cost</h3>
+
+            <strong>
+                {{ average_cost }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-content">
+
+        <div class="dashboard-box">
+
+            <h3>Rating Distribution</h3>
+
+
+            <div class="rating-row">
+
+                <div class="rating-label">
+                    <span>Excellent</span>
+                    <span>{{ excellent }}</span>
+                </div>
+
+                <div class="bar">
+                    <div
+                        class="fill"
+                        data-width="{{ excellent_percent }}">
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="rating-row">
+
+                <div class="rating-label">
+                    <span>Good</span>
+                    <span>{{ good }}</span>
+                </div>
+
+                <div class="bar">
+                    <div
+                        class="fill"
+                        data-width="{{ good_percent }}">
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="rating-row">
+
+                <div class="rating-label">
+                    <span>Average</span>
+                    <span>{{ average }}</span>
+                </div>
+
+                <div class="bar">
+                    <div
+                        class="fill"
+                        data-width="{{ average_percent }}">
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="rating-row">
+
+                <div class="rating-label">
+                    <span>Low</span>
+                    <span>{{ low }}</span>
+                </div>
+
+                <div class="bar">
+                    <div
+                        class="fill"
+                        data-width="{{ low_percent }}">
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-box">
+
+            <h3>Restaurant Insights</h3>
+
+            <img
+                class="dashboard-image"
+                src="https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=1000&q=85"
+                alt="Food Analytics">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ABOUT -->
+<section id="about">
+
+    <div class="about-container">
+
+        <div class="about-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1000&q=85"
+                alt="Restaurant Dining">
+
+        </div>
+
+
+        <div class="about-text">
+
+            <h2>About RestoPredict</h2>
+
+            <p>
+                RestoPredict is a machine learning based
+                Restaurant Rating Prediction system.
+            </p>
+
+            <p>
+                The application uses restaurant information
+                from the dataset to predict an expected
+                restaurant rating.
+            </p>
+
+            <p>
+                The system also provides a dashboard to
+                understand restaurant statistics and rating
+                distribution.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="workflow">
+
+        <div class="workflow-card">
+
+            <span>01</span>
+
+            <h3>Dataset</h3>
+
+            <p>
+                Restaurant data is collected and prepared
+                for machine learning.
+            </p>
+
+        </div>
+
+
+        <div class="workflow-card">
+
+            <span>02</span>
+
+            <h3>Preprocessing</h3>
+
+            <p>
+                Missing values and categorical data
+                are handled before training.
+            </p>
+
+        </div>
+
+
+        <div class="workflow-card">
+
+            <span>03</span>
+
+            <h3>Prediction</h3>
+
+            <p>
+                The trained model predicts the
+                expected restaurant rating.
+            </p>
+
+        </div>
+
+
+        <div class="workflow-card">
+
+            <span>04</span>
+
+            <h3>Analytics</h3>
+
+            <p>
+                Restaurant statistics are displayed
+                through the dashboard.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+
+    <p>
+        © 2026 RestoPredict | Restaurant Rating Prediction
+    </p>
+
+</footer>
+
+
+<!-- BAR WIDTH SCRIPT -->
+<script>
+
+    const bars = document.querySelectorAll(".fill");
+
+    bars.forEach(function(bar) {
+
+        const value = parseFloat(bar.dataset.width);
+
+        if (!isNaN(value)) {
+            bar.style.width = value + "%";
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
