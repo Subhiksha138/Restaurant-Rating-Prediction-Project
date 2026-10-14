@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 from flask import Flask, render_template, request
 import pandas as pd
 import sqlite3
@@ -459,10 +459,10 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
 
     app.run(
-        host="127.0.0.1",
+        host="0.0.0.0",
         port=port,
         debug=False
-=======
+
 from flask import Flask, render_template, request
 import pandas as pd
 
@@ -474,16 +474,10 @@ from sklearn.impute import SimpleImputer
 from sklearn.ensemble import RandomForestRegressor
 
 
-# =====================================================
-# FLASK APPLICATION
-# =====================================================
 
 app = Flask(__name__)
 
 
-# =====================================================
-# LOAD DATASET
-# =====================================================
 
 df = pd.read_csv(
     "dataset/Zomato.csv",
@@ -491,16 +485,10 @@ df = pd.read_csv(
 )
 
 
-# =====================================================
-# CLEAN COLUMN NAMES
-# =====================================================
 
 df.columns = df.columns.str.strip().str.lower()
 
 
-# =====================================================
-# TARGET COLUMN
-# =====================================================
 
 target = "aggregate rating"
 
@@ -514,9 +502,7 @@ df = df.dropna(
 )
 
 
-# =====================================================
-# REMOVE UNNECESSARY COLUMNS
-# =====================================================
+
 
 remove_columns = [
     "aggregate rating",
@@ -536,18 +522,13 @@ features = [
 ]
 
 
-# =====================================================
-# INPUT AND TARGET
-# =====================================================
 
 X = df[features]
 
 y = df[target]
 
 
-# =====================================================
-# NUMERIC AND CATEGORICAL COLUMNS
-# =====================================================
+
 
 numeric_features = X.select_dtypes(
     include=["number"]
@@ -559,18 +540,14 @@ categorical_features = X.select_dtypes(
 ).columns.tolist()
 
 
-# =====================================================
-# NUMERIC PREPROCESSING
-# =====================================================
+
 
 numeric_processor = SimpleImputer(
     strategy="median"
 )
 
 
-# =====================================================
-# CATEGORICAL PREPROCESSING
-# =====================================================
+
 
 categorical_processor = Pipeline([
     (
@@ -589,9 +566,6 @@ categorical_processor = Pipeline([
 ])
 
 
-# =====================================================
-# COMBINE PREPROCESSING
-# =====================================================
 
 preprocessor = ColumnTransformer([
     (
@@ -904,13 +878,10 @@ def predict():
     )
 
 
-# =====================================================
-# START FLASK APPLICATION
-# =====================================================
+
 
 if __name__ == "__main__":
 
     app.run(
         debug=True
->>>>>>> 86b41c4d7cdd7abe568331261f6702c62c4591ba
     )
