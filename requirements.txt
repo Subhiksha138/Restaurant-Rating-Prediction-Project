@@ -1,16 +1,4 @@
-<<<<<<< HEAD
 Flask
 pandas
-numpy
 scikit-learn
-openpyxl
-matplotlib
-=======
-Flask
-pandas
-numpy
-scikit-learn
-openpyxl
-matplotlib
 gunicorn
->>>>>>> 86b41c4d7cdd7abe568331261f6702c62c4591ba
